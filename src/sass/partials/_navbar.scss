@@ -1,0 +1,36 @@
+nav {
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .buttons {
+        padding-top: 50px;
+        a {
+            padding: 0px 50px 0 50px;
+            text-decoration: none;
+            color: $color-white;
+            font-size: 20px;
+        }
+    }
+
+    .head-text {
+        h1 {
+            // padding-top: 50px;
+            color: $color-white;
+            font-size: 65px;
+            letter-spacing: 5px;
+            font-family: SansPro-Regular;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        p {
+            display: flex;
+            justify-content: end;
+            color: $color-white;
+            font-size: 26px;
+        }
+    }
+
+}

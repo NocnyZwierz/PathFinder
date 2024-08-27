@@ -1,0 +1,20 @@
+
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: $color-black;
+
+
+  .image-body {
+    background-image: url("../images/background.jpg");
+    max-width: 1920px;
+    max-height: 1080px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin: 0 auto;
+    background-size: cover;
+  }
+}
