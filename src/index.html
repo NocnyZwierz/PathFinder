@@ -3,9 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>PathFinder</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    
+    <div class="image-body">
+        <!-- tutaj dodać diva i wcisnać między niego a image body gradiant -->
+        <nav>
+            <div class="buttons">
+                <a href="#about">ABOUT</a>
+                <a href="#finder">FINDER</a>
+            </div>
+            <div class="head-text">
+                <h1>PATHFINDER</h1>
+                <p>FOR TRAVELLERS</p>
+            </div>
+        </nav>
+        <div id="pages">
+            <section id="about">
+                <div class="about-wraper container"></div>
+            </section>
+            <section id="finder">
+                <div class="finder-wraper container"></div>
+            </section>
+        </div>
+        <footer>
+            <p>All rights reservd</p>
+        </footer>
+    </div>
+    <!-- <div class="gradiant"></div> -->
+    <script id="template-about-content" type="text/x-handlebars-template">
+        <div class="about-widget">
+            <div class="image-top">
+                <div>
+                    <img src="images/1.jpg" alt="coś">
+                </div>    
+                <h3>PLAN YOUR JOURNEYS</h3>
+                <p>Pick attractions and book hotels</p>
+            </div>
+            <div class="image-bottom">
+                <img src="images/2.jpg" alt="coś">
+                <h3>MINIMALIZE BOREDOM</h3>
+                <p>Pick routs thet are short and atractive</p>
+            </div>
+        </div>
+    </script>
+    <script id="template-finder-content"  type="text/x-handlebars-template">
+        <div class="finder-widget">
+            <p>Test huj</p>
+        </div>
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.0/handlebars.min.js"></script>
+    <script src="js/app.js" type="module"></script>
 </body>
 </html>
