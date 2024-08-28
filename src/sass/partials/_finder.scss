@@ -1,0 +1,16 @@
+#pages {
+    > * {
+      display: none;
+    }
+  
+    > .active {
+      display: block;
+    }
+  }
+
+.finder-widget {
+  background-color: aqua;
+  width: 1000px;
+  height: 1000px;
+  color:azure;
+}

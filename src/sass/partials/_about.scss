@@ -1,0 +1,31 @@
+#pages {
+  > * {
+    display: none;
+  }
+
+  > .active {
+    display: block;
+  }
+}
+
+.about-widget {
+  z-index: 1;
+  position: relative;
+}
+
+.image-top {
+  img {
+        
+    width: 400px;
+    height: 400px;
+  }
+}
+
+.image-bottom{
+  img {
+            
+    width: 800px;
+    height: 400px;
+  }
+}
+
