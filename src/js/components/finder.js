@@ -6,7 +6,6 @@ class Finder {
   }
 
   render(element) {
-    console.log('render finder ----------------->');
     const thisFinder = this;
     thisFinder.dom = {};
     thisFinder.dom.wrapper = element;
