@@ -1,16 +1,34 @@
 #pages {
-    > * {
-      display: none;
-    }
-  
-    > .active {
-      display: block;
-    }
+  > * {
+    display: none;
   }
+  
+  > .active {
+    display: block;
+  }
+}
 
 .finder-widget {
-  background-color: aqua;
-  width: 1000px;
-  height: 1000px;
-  color:azure;
+
+.grid{
+  display: grid;
+
+  .style-row{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    .field {
+      height: 50px;
+      width: 50px;
+      padding: 5px;
+      border: solid;
+      border-color: $color-white;
+    }
+  }
+ 
+}
+  h3 {
+    color: $color-white;
+  }
+  
 }

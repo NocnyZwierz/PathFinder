@@ -9,10 +9,18 @@ export const select = {
     links: '.buttons a',
   },
 
+  finder: {
+    grid: '.grid',
+    mainBtn: '.main-button'
+
+  },
+
 };
   
 export const classNames = {
-
+  finder: {
+    field: '.field',
+  },
   nav: {
     active: 'active',
   },
@@ -23,6 +31,6 @@ export const classNames = {
   
 
 export const templates = {
-  aboutContent: Handlebars.compile(document.querySelector('#template-about-content').innerHTML),
+  aboutContent:  Handlebars.compile(document.querySelector('#template-about-content').innerHTML),
   finderContent: Handlebars.compile(document.querySelector('#template-finder-content').innerHTML),
 };
