@@ -9,24 +9,29 @@
 }
 
 .finder-widget {
+  .grid{
+    display: grid;
 
-.grid{
-  display: grid;
+    .style-row{
+      display: flex;
+      flex-wrap: wrap;
+      flex-direction: row;
 
-  .style-row{
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-    .field {
-      height: 50px;
-      width: 50px;
-      padding: 5px;
-      border: solid;
-      border-color: $color-white;
+      .field {
+        height: 50px;
+        width: 50px;
+        padding: 5px;
+        border: solid;
+        border-color: $color-white;
+      }
+
+      .field.active {
+        background-color: $color-brown;
+      }
     }
-  }
  
-}
+  }
+
   h3 {
     color: $color-white;
   }

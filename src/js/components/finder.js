@@ -1,6 +1,7 @@
 import { classNames, select, templates } from '../settings.js';
 
 class Finder {
+  
   constructor (element) {
     const thisFinder = this;
     // save reference to finder page div
@@ -9,6 +10,15 @@ class Finder {
     
 
     this.render(element);
+
+    thisFinder.grid ={};
+    for(let row = 1; row <=10; row++){
+      thisFinder.grid[row] = {};
+      for(let col = 1; col <=10; col++) {
+        thisFinder.grid[row][col]= false;
+      }
+    }
+    console.log('siatka', thisFinder.grid);
   }
 
   render(element) {
@@ -63,7 +73,10 @@ class Finder {
      
       thisFinder.element.querySelector(select.finder.grid).addEventListener('click', function(e) {
         e.preventDefault();
-        if(e.target.cllassList.contains(classNames.finder.field)) {
+        console.log(e.target.classList);
+        console.log(classNames.finder.field);
+        if(e.target.classList.contains(classNames.finder.field)) {
+          console.log(e.target);
           thisFinder.toggleField(e.target);
         }
       });
@@ -78,6 +91,47 @@ class Finder {
     }
   }
 
+  toggleField(fieldElement) {
+    const thisFinder = this;
+    console.log('toggle');
+    const field = {
+      row: fieldElement.getAttribute('data-row'),
+      col: fieldElement.getAttribute('data-col'),
+    };
+    console.log(field);
+    if(thisFinder.grid[field.row][field.col]) {
+      this.grid[field.row][field.col] = false;
+      fieldElement.classNames.remove(classNames.finder.active);
+    } else {
+      const gridValue = Object.values(thisFinder.grid).map(col => Object.values(col)).flat(); // nie rozumiem tego zapisu
+      console.log(gridValue);
+      if(gridValue.includes(true)) {
+        console.log('test');
+        const edgeFields = [];
+        if(field.col > 1) edgeFields.push(thisFinder.grid[field.row][field.col-1]);
+
+        if(field.col < 10) edgeFields.push(thisFinder.grid[field.row][parseInt(field.col)+1]);
+        if(field.row > 1) edgeFields.push(thisFinder.grid[field.row-1][field.col]);
+        if(field.row < 10) edgeFields.push(thisFinder.grid[parseInt(field.row)+1][field.col]);
+        console.log(edgeFields);
+        if(!edgeFields.includes(true)){
+          alert('A new field should touch at least one that is already selected!');
+          return;
+        }
+
+        // thisFinder.grid[field.row][field.col] = true;
+        // console.log('chuuw sto!!!!!!');
+        // fieldElement.classList.add(classNames.finder.active);
+        // console.log(fieldElement);
+      }
+      thisFinder.grid[field.row][field.col] = true;
+      console.log('chuuw sto!!!!!!');
+      fieldElement.classList.add(classNames.finder.active);
+      console.log(fieldElement);
+
+    }
+
+  }
 
 }
 

@@ -19,7 +19,8 @@ export const select = {
   
 export const classNames = {
   finder: {
-    field: '.field',
+    field: 'field',
+    active: 'active' //dlaczego
   },
   nav: {
     active: 'active',

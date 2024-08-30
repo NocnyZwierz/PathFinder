@@ -17,10 +17,10 @@ nav {
 
   .head-text {
     h1 {
-      // padding-top: 50px;
+      padding-top: 50px;
       color: $color-white;
       font-size: 65px;
-      letter-spacing: 5px;
+      letter-spacing: 50px;
       font-family: SansPro-Regular;
       margin-bottom: 0;
       padding-bottom: 0;
@@ -31,6 +31,8 @@ nav {
       justify-content: end;
       color: $color-white;
       font-size: 26px;
+      letter-spacing: 10px;
+      padding-right: 45px;
     }
   }
 
