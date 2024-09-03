@@ -12,7 +12,7 @@ class Finder {
     this.render(element);
 
     thisFinder.grid ={};
-    for(let row = 1; row <=10; row++){
+    for(let row = 1; row <=10; row++){//"magick number" dobrze wywalić liczby do property np const const maxRow = 10;
       thisFinder.grid[row] = {};
       for(let col = 1; col <=10; col++) {
         thisFinder.grid[row][col]= false;
@@ -61,7 +61,7 @@ class Finder {
     thisFinder.render(this.element);
   }
 
-  fieldClick () {
+  fieldClick () {                                 
     const thisFinder = this;
     // switch bo szybciej i czyściej
     switch (thisFinder.step) {
@@ -73,20 +73,19 @@ class Finder {
      
       thisFinder.element.querySelector(select.finder.grid).addEventListener('click', function(e) {
         e.preventDefault();
-        console.log(e.target.classList);
-        console.log(classNames.finder.field);
         if(e.target.classList.contains(classNames.finder.field)) {
-          console.log(e.target);
           thisFinder.toggleField(e.target);
         }
       });
-      
+      //tutaj jeszcze dodać funkconalność podświetlające pola gdzie można kliknąć, przy walidaci można ustawić pola dostępne do kliknięcia
       break;
     case 2:
-        
+      //dwie pętle przechodzące przez nasz obiekt co jest stworzony w konstruktorzę żeby pobrać które pole jest true a które falce.
+      // dodać logikę do wskazania startu trasy i zakończenia (musi mieć walidacę czy jest na odpowiednik kafelku z statusem true jeśli nie komunikat ze wybrany kafelek jest poza trasą)
       break;
     case 3:
-        
+      // logikę do obliczania całe trasy. Wyświetlenie najkrótszej trasy na grid. guzik do wyczyszczenia i przejscie do początku działanie aplikacji
+      //dodatkowa tablica na start stop żeby większyć wydaność aplikaci.
       break;
     }
   }
@@ -98,40 +97,153 @@ class Finder {
       row: fieldElement.getAttribute('data-row'),
       col: fieldElement.getAttribute('data-col'),
     };
-    console.log(field);
     if(thisFinder.grid[field.row][field.col]) {
       this.grid[field.row][field.col] = false;
-      fieldElement.classNames.remove(classNames.finder.active);
+      //sprawdzic przed usunieciem czy mozna go usunac (czy przylega do wiecej niż 1 pola active)      
+      fieldElement.classList.remove(classNames.finder.active);
+      this.deleteNextAction(field);
+      //dodanie klasy nextAction do elementu kliknietego (usuniecie zaznaczenia)
+
+    
     } else {
-      const gridValue = Object.values(thisFinder.grid).map(col => Object.values(col)).flat(); // nie rozumiem tego zapisu
+      const gridValue = Object.values(thisFinder.grid).map(col => Object.values(col)).flat(); // przy wyborze pierszego kafelka
       console.log(gridValue);
       if(gridValue.includes(true)) {
-        console.log('test');
         const edgeFields = [];
         if(field.col > 1) edgeFields.push(thisFinder.grid[field.row][field.col-1]);
-
         if(field.col < 10) edgeFields.push(thisFinder.grid[field.row][parseInt(field.col)+1]);
         if(field.row > 1) edgeFields.push(thisFinder.grid[field.row-1][field.col]);
         if(field.row < 10) edgeFields.push(thisFinder.grid[parseInt(field.row)+1][field.col]);
-        console.log(edgeFields);
+
         if(!edgeFields.includes(true)){
           alert('A new field should touch at least one that is already selected!');
           return;
         }
-
-        // thisFinder.grid[field.row][field.col] = true;
-        // console.log('chuuw sto!!!!!!');
-        // fieldElement.classList.add(classNames.finder.active);
-        // console.log(fieldElement);
       }
       thisFinder.grid[field.row][field.col] = true;
-      console.log('chuuw sto!!!!!!');
       fieldElement.classList.add(classNames.finder.active);
-      console.log(fieldElement);
+      fieldElement.classList.remove(classNames.finder.nextAction);
+
+      this.setNexAction(field);
 
     }
-
   }
+
+  setNexAction (field) {
+    if(field.col > 1) {
+      let elementCandidate = document.querySelector(`[data-row="${field.row}"][data-col="${field.col-1}"]`); //bez przecinków i spacji bo nie działa
+      if (!elementCandidate.classList.contains('active')) {
+        elementCandidate.classList.add(classNames.finder.nextAction);
+      }
+    }
+    
+    if(field.col < 10) { 
+      let elementCandidate = document.querySelector(`[data-row="${field.row}"][data-col="${parseInt(field.col)+1}"]`);
+      if (!elementCandidate.classList.contains('active')) {
+        elementCandidate.classList.add(classNames.finder.nextAction);
+      }
+    }
+
+    if(field.row > 1) {
+      let elementCandidate = document.querySelector(`[data-row="${field.row-1}"][data-col="${field.col}"]`);
+      if (!elementCandidate.classList.contains('active')) {
+        elementCandidate.classList.add(classNames.finder.nextAction);
+      }
+    }
+
+    if(field.row < 10) {
+      let elementCandidate = document.querySelector(`[data-row="${parseInt(field.row)+1}"][data-col="${field.col}"]`);
+      if (!elementCandidate.classList.contains('active')) {
+        elementCandidate.classList.add(classNames.finder.nextAction);
+      }
+    }
+  }
+
+  getEdges(field) {
+    const edges = {};
+    edges.top = document.querySelector(`[data-row="${field.row-1}"][data-col="${field.col}"]`);
+    edges.right = document.querySelector(`[data-row="${field.row}"][data-col="${parseInt(field.col)+1}"]`);
+    edges.bottom = document.querySelector(`[data-row="${parseInt(field.row)+1}"][data-col ="${field.col}"]`);
+    edges.left = document.querySelector(`[data-row="${field.row}"][data-col="${field.col-1}"]`);
+    return edges;
+  }
+  
+  shouldRemoveNextAction(candidateField) {
+    let edges = this.getEdges(candidateField);
+    console.log(edges);
+    console.log((edges.top && edges.top.classList.contains('active')));
+    console.log((edges.right && edges.right.classList.contains('active')));
+
+    console.log((edges.bottom && edges.bottom.classList.contains('active')));
+
+    console.log((edges.left && edges.left.classList.contains('active')));
+
+    return (
+      (edges.top && edges.top.classList.contains('active')) ||
+    (edges.right && edges.right.classList.contains('active')) ||
+    (edges.bottom && edges.bottom.classList.contains('active')) ||
+    (edges.left && edges.left.classList.contains('active')) 
+    );  
+  }
+
+  deleteNextAction (field) {
+    if(field.col > 1) {
+      let elementCandidate = document.querySelector(`[data-row="${field.row}"][data-col="${field.col-1}"]`); //bez przecinków i spacji bo nie działa
+      
+      // let elementCandidateTop = document.querySelector(`[data-row="${field.row-1}"][data-col="${field.col-1}"]`);
+      // let elementCandidateRigth = document.querySelector(`[data-row="${field.row}"][data-col="${field.col}"]`);
+      // let elementCandidateBottom = document.querySelector(`[data-row="${parseInt(field.row)+1}"][data-col="${field.col-1}"]`);
+      // let elementCandidateLeft = document.querySelector(`[data-row="${field.row}"][data-col="${field.col-2}"]`);
+      let candidateField = {
+        row: field.row,
+        col: field.col-1
+      };
+      // let elementCandidateEdges = this.getEdges(candidateField);      
+      if (!this.shouldRemoveNextAction(candidateField)) {
+        elementCandidate.classList.remove(classNames.finder.nextAction);
+      }
+    }
+
+    if(field.col < 10) { 
+      
+      let candidateField = {
+        row: field.row,
+        col: parseInt(field.col)+1
+      };
+
+      let elementCandidate = document.querySelector(`[data-row="${field.row}"][data-col="${parseInt(field.col)+1}"]`);
+      if (!this.shouldRemoveNextAction(candidateField)) {
+      
+        elementCandidate.classList.remove(classNames.finder.nextAction);
+      }
+    }
+
+    if(field.row > 1) {
+      let candidateField = {
+        row: field.row -1,
+        col: field.col
+      };
+
+
+      let elementCandidate = document.querySelector(`[data-row="${field.row-1}"][data-col="${field.col}"]`);
+      if (!this.shouldRemoveNextAction(candidateField)) {
+        elementCandidate.classList.remove(classNames.finder.nextAction);
+      }
+    }
+
+    if(field.row < 10) {
+      let candidateField = {
+        row: parseInt(field.row) + 1,
+        col: field.col
+      };
+
+      let elementCandidate = document.querySelector(`[data-row="${parseInt(field.row)+1}"][data-col="${field.col}"]`);
+      if (!this.shouldRemoveNextAction(candidateField)) {
+        elementCandidate.classList.remove(classNames.finder.nextAction);
+      }
+    }
+  }
+
 
 }
 

@@ -20,7 +20,8 @@ export const select = {
 export const classNames = {
   finder: {
     field: 'field',
-    active: 'active' //dlaczego
+    active: 'active', //dlaczego
+    nextAction: 'nextAction',
   },
   nav: {
     active: 'active',
