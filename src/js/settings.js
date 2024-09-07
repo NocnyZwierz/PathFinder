@@ -22,6 +22,8 @@ export const classNames = {
     field: 'field',
     active: 'active', //dlaczego
     nextAction: 'nextAction',
+    start: 'start',
+    finish: 'finish',
   },
   nav: {
     active: 'active',

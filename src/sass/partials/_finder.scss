@@ -9,8 +9,20 @@
 }
 
 .finder-widget {
+  padding-top: 25px;
+
+  h3 {
+    position: relative;
+    top: -20px;
+    display: flex;
+    justify-content: center;
+    color: $color-white;
+    font-size: 41px;
+  }
+
   .grid{
     display: grid;
+    justify-content: center;
 
     .style-row{
       display: flex;
@@ -32,12 +44,32 @@
       .field.nextAction {
         background-color: $color-blue;
       }
+
+      .field.start.active {
+        background-color: green;
+      }
+
+      .field.finish{
+        background-color: black;
+      }
     }
- 
   }
 
-  h3 {
-    color: $color-white;
+  .main-button {
+    display: flex;
+    justify-content: center; /*nie działa ale dlaczego? */
+
+    background-color: $color-brick;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
   }
+
   
 }
