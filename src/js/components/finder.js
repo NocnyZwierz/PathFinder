@@ -357,10 +357,173 @@ class Finder {
   }
 
   compiut() {
-    //  1 dodać wyświetlenie diva
+    //https://stackoverflow.com/questions/55239386/finding-shortest-path-in-two-dimensional-array-javascript
+    //https://stackoverflow.com/questions/61733601/iterative-depth-first-search-to-find-longest-path-in-javascript
+    //https://www.algorytm.edu.pl/grafy/bfs
+    // algorytm do wyszukania najkrótszej drogi
     document.querySelector('#infoDiv').style.display='flex';
     
 
+    // Zapisujemy współrzędne punktu startowego i końcowego jako tablice [row, col]
+    const start = [parseInt(this.start.row), parseInt(this.start.col)];
+    const finish = [parseInt(this.finish.row), parseInt(this.finish.col)];
+
+    // Implementacja algorytmu BFS (Breadth-First Search) dla najkrótszej ścieżki
+    const bfs = (from, to) => {
+      let traversalTree = {};  // Drzewo przeszukiwań, w którym zapisywane są przodkowie węzłów
+      let visited = new Set(); // Zbiór odwiedzonych węzłów, aby uniknąć ponownego przetwarzania
+      let queue = [];          // Kolejka FIFO, używana do przechodzenia przez węzły
+      queue.push(from);        // Dodajemy punkt startowy do kolejki
+
+      while (queue.length) {
+        let subtreeRoot = queue.shift(); // Pobieramy pierwszy element z kolejki
+        visited.add(subtreeRoot.toString()); // Oznaczamy go jako odwiedzonego
+
+        // Jeśli doszliśmy do celu, zwracamy ścieżkę od startu do celu
+        if (subtreeRoot.toString() == to.toString()) {
+          return buildPath(traversalTree, to);
+        }
+
+        // Dla każdego sąsiedniego węzła (dziecka) sprawdzamy, czy już został odwiedzony
+        for (let child of this.successors(subtreeRoot)) {
+          if (!visited.has(child.toString())) {
+            traversalTree[child] = subtreeRoot; // Zapisujemy rodzica dziecka w drzewie przeszukiwań
+            queue.push(child); // Dodajemy dziecko do kolejki
+          }
+        }
+      }
+
+      return null; // Zwróć null, jeśli nie znaleziono ścieżki
+    };
+
+    // Implementacja algorytmu DFS (Depth-First Search) dla najdłuższej ścieżki
+    const dfs = (from, to) => {
+      let visited = new Set(); // Zbiór odwiedzonych węzłów, aby uniknąć cykli
+      let longestPath = [];    // Tablica przechowująca najdłuższą ścieżkę
+
+      const explore = (currentNode, currentPath) => {
+      // Oznaczamy węzeł jako odwiedzony i dodajemy do bieżącej ścieżki
+        visited.add(currentNode.toString());
+        currentPath.push(currentNode);
+
+        // Jeśli doszliśmy do końcowego punktu, sprawdzamy długość ścieżki
+        if (currentNode.toString() === to.toString()) {
+          if (currentPath.length > longestPath.length) {
+
+            // let gridValueCheck = Object.values(this.grid).map(col => Object.values(col)).flat(); //spłaszcza tablice i sprawdza czy est pierwszy kliknięty
+            // let gridOnlyTrueValues = gridValueCheck.filter((value) => {
+            //   return value;
+            // });
+            
+            longestPath = [...currentPath]; // Zapisujemy bieżącą ścieżkę jako najdłuższą
+            // if(longestPath.length === gridOnlyTrueValues.length) {
+            //   return;
+            // }
+          }
+        } else {
+        // Dla każdego sąsiada eksplorujemy dalej
+          for (let neighbor of this.successors(currentNode)) {
+            if (!visited.has(neighbor.toString())) {
+              explore(neighbor, currentPath);
+            }
+          }
+        }
+
+        // Usuwamy węzeł z bieżącej ścieżki i oznaczamy go jako nieodwiedzony (backtracking)
+        visited.delete(currentNode.toString());
+        currentPath.pop();
+      };
+
+      // Rozpoczynamy eksplorację DFS od punktu startowego
+      explore(from, []);
+
+      return longestPath; // Zwracamy najdłuższą znalezioną ścieżkę
+    };
+
+    // Funkcja budująca ścieżkę od punktu końcowego do startowego
+    const buildPath = (traversalTree, to) => {
+      let path = [to]; // Zaczynamy od punktu końcowego
+      let parent = traversalTree[to]; // Znajdujemy rodzica punktu końcowego
+
+      // Rekonstruujemy ścieżkę, dodając rodziców do tablicy
+      while (parent) {
+        path.push(parent); 
+        parent = traversalTree[parent]; // Przechodzimy do kolejnych rodziców
+      }
+    
+      return path.reverse(); // Odwracamy ścieżkę, aby zaczynała się od punktu startowego
+    };
+
+    // Funkcja, która znajduje sąsiadujące komórki dla danego węzła w siatce
+    this.successors = (root) => {
+    // Sąsiadujące komórki: góra, lewo, dół, prawo
+      let connectedCells = [
+        [root[0] - 1, root[1]], // Góra
+        [root[0], root[1] - 1], // Lewo
+        [root[0] + 1, root[1]], // Dół
+        [root[0], root[1] + 1]  // Prawo
+      ];
+
+      // Filtrujemy komórki, które są w granicach siatki (nie wychodzą poza nią)
+      const validCells = connectedCells.filter(
+        (cell) => (
+          cell[0] >= 1 && cell[0] <= 10 && // Wiersz w granicach (1-10)
+        cell[1] >= 1 && cell[1] <= 10    // Kolumna w granicach (1-10)
+        )
+      );
+
+      // Zwracamy tylko te komórki, które są aktywne (true) na ścieżce
+      return validCells.filter(
+        (cell) => this.grid[cell[0]][cell[1]] === true
+      );
+    };
+
+    // Uruchamiamy algorytm BFS od punktu startowego do punktu końcowego
+    const shortestPath = bfs(start, finish);
+    
+    // Jeśli znaleziono ścieżkę, wyświetlamy ją i logujemy jej długość
+    if (shortestPath) {
+      this.displayPath(shortestPath);
+      document.querySelector('#shortestRoute').innerHTML=shortestPath.length;
+      console.log('Długość najkrótszej ścieżki:', shortestPath.length); // Wyświetla długość najkrótszej ścieżki w konsoli
+    } else {
+      alert('No path found!');
+    }
+
+    // Zliczanie wszystkich zaznaczonych kafelków (pełna trasa)
+    let fullRouteCount = 0;
+    for (let row = 1; row <= 10; row++) {
+      for (let col = 1; col <= 10; col++) {
+        if (this.grid[row][col] === true) {
+          fullRouteCount++;
+        }
+      }
+    }
+
+
+
+    // Wyświetlamy liczbę zaznaczonych kafelków (pełna trasa)
+    document.querySelector('#fullRoute').innerHTML=fullRouteCount;
+    console.log('Liczba zaznaczonych kafelków (pełna trasa):', fullRouteCount);
+
+    // Uruchamiamy algorytm DFS, aby znaleźć najdłuższą ścieżkę
+    const longestPath = dfs(start, finish);
+
+    // Jeśli znaleziono najdłuższą ścieżkę, logujemy jej długość
+    if (longestPath.length) {
+      //this.displayPath(shortestPath);
+      document.querySelector('#longestRoute').innerHTML=longestPath.length;
+      console.log('Długość najdłuższej ścieżki:', longestPath.length); // Wyświetla długość najdłuższej ścieżki w konsoli
+    } else {
+      alert('No longest path found!');
+    }
+  }
+  
+  displayPath(path) {
+    for (let node of path) {
+      const fieldElement = document.querySelector(`[data-row="${node[0]}"][data-col="${node[1]}"]`);
+      fieldElement.classList.add('start');
+    }
   }
 }
 
