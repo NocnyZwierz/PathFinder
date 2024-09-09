@@ -11,8 +11,8 @@
 .finder-widget {
   padding-top: 25px;
   display: flex;
-  justify-content: center; /* Wyśrodkowanie w poziomie */
-  align-items: center;     /* Wyśrodkowanie w pionie */
+  justify-content: center; 
+  align-items: center;     
   flex-direction: column;
 
   h3 {
@@ -50,11 +50,11 @@
       }
 
       .field.start.active {
-        background-color: green;
+        background-color: rgba(0, 128, 0, 0.5);
       }
 
-      .field.finish{
-        background-color: black;
+      .field.finish.active{
+        background-color: rgba(255, 0, 0, 0.5);
       }
     }
   }

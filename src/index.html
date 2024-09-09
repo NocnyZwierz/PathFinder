@@ -7,6 +7,17 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <div id="infoDiv" class="infoDivStyle">
+        <div class="displayInfo" id="innerInfoDiv">
+            <div class="close" onclick="test()">
+                <P>X</P>
+            </div>
+            <h3>SUMMARY</h3>
+                <p>full route: <span class="fullRouteStyle" id="fullRoute"></span> fields</p>
+                <p>the longest route: <span class="longestRouteStyle" id="longestRoute"></span> fields</p>
+                <p>the shortest route: <span class="shortestRouteStyle" id="shortestRoute"></span> fields</p>
+        </div>
+    </div>
     <div class="image-body">
         <!-- tutaj dodać diva i wcisnać między niego a image body gradiant -->
         <nav>
@@ -32,6 +43,11 @@
         </footer>
     </div>
     <!-- <div class="gradiant"></div> -->
+     <script>
+        function test(element) {
+            document.querySelector('#infoDiv').style.display='none';
+        }
+     </script>
     <script id="template-about-content" type="text/x-handlebars-template">
         <div class="about-widget">
             <div class="image-top">
@@ -57,7 +73,6 @@
             <button class="main-button">{{btnText}}</button>
         </div>
     </script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.0/handlebars.min.js"></script>
     <script src="js/app.js" type="module"></script>
 </body>

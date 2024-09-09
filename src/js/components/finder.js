@@ -10,7 +10,6 @@ class Finder {
     thisFinder.start = null;
     thisFinder.finish = null;
 
-
     thisFinder.grid ={};
     for(let row = 1; row <=10; row++){//"magick number" dobrze wywalić liczby do property np const const maxRow = 10; tworzy sietkę dla naszych potrzeb
       thisFinder.grid[row] = {};
@@ -25,7 +24,6 @@ class Finder {
     const thisFinder = this; //bez tego ani nie idzie musi być bo nie ma do czego przypisać
     thisFinder.dom = {}; // i to też!!!!!!!!!!!
     thisFinder.dom.wrapper = element;
-    console.log(thisFinder);
     let pageData = {}; //będzie null safety ustawia nam napisy na button
     switch (thisFinder.step) {
     case 1:
@@ -43,7 +41,6 @@ class Finder {
     thisFinder.dom.wrapper.innerHTML = generatedHTML;
 
     let html = ''; // generuje grid czyli 100 div w siatce 10 na 10
-    console.log(thisFinder);
     for (let row = 1; row <= 10; row++){
       html += '<div class="style-row">';
       for(let col = 1; col <= 10; col++){
@@ -61,11 +58,10 @@ class Finder {
     thisFinder.step = newStep;
     thisFinder.render(this.element);
   }
-
+  
   fieldClick () {// obsługa kliknięcia naszego pola w div w grid                        
     const thisFinder = this;
     // switch bo szybciej i czyściej
-    console.log(this.step, '---------- który step');
     switch (thisFinder.step) {
     case 1:
       thisFinder.element.querySelector(select.finder.mainBtn).addEventListener('click', function(e) { // obsługa change step i przejście do nstępnego etapu
@@ -97,7 +93,11 @@ class Finder {
       // dodać logikę do wskazania startu trasy i zakończenia (musi mieć walidacę czy jest na odpowiednik kafelku z statusem true jeśli nie komunikat ze wybrany kafelek jest poza trasą)
       thisFinder.element.querySelector(select.finder.mainBtn).addEventListener('click', function(e) { // obsługa change step i przejście do nstępnego etapu
         e.preventDefault();
-        thisFinder.changeStep(3);
+        if(thisFinder.start && thisFinder.finish){
+          thisFinder.changeStep(3);
+        } else {
+          alert ('Start & Finish not selected');
+        }
       });
 
       thisFinder.element.querySelector(select.finder.grid).addEventListener('click', function(e) { // obsługa grid i wyrenderowanie zaznaczonych pół po kliknięciu podświetla się pole i do okoła kolene mozliwe ruchy
@@ -116,19 +116,19 @@ class Finder {
         e.preventDefault();
         thisFinder.changeStep(1);
       });
+      //---------------------> tutaj
+      thisFinder.compiut();
       break;
     }
   }
 
   toggleField(fieldElement) { // 
     const thisFinder = this;
-    console.log('toggle');
     const field = {
       row: fieldElement.getAttribute('data-row'),
       col: fieldElement.getAttribute('data-col'),
     };
     if(thisFinder.grid[field.row][field.col]) {
-      console.log(!this.canRemoveActive(field));
       if (!this.canRemoveActive(field)) { //warunek do sprawdzenia czy można usunać kafelek zapobiega przerwaniu trasy
         fieldElement.classList.remove(classNames.finder.active);
         fieldElement.classList.add(classNames.finder.nextAction);
@@ -140,7 +140,6 @@ class Finder {
           
     } else {
       const gridValue = Object.values(thisFinder.grid).map(col => Object.values(col)).flat(); // przy wyborze pierszego kafelka
-      console.log(gridValue);
       if(gridValue.includes(true)) {
         const edgeFields = [];
         if(field.col > 1) edgeFields.push(thisFinder.grid[field.row][field.col-1]);
@@ -254,8 +253,6 @@ class Finder {
     let fieldActive = directions.reduce((count, dir) => {
       return edges[dir] && edges[dir].classList.contains('active') ? count + 1 : count;
     }, 0);
-  
-    console.log(fieldActive, 'ile spełnia warunki');
     return fieldActive >= 2;
   }
 
@@ -328,7 +325,7 @@ class Finder {
   
   setStartandStop (fieldElement) {
     if(this.start && this.finish) {
-      alert('Start & finish are selecter! Pleas continue.');
+      alert('Start & finish are selecter! Please continue.');
       return;
     }
 
@@ -359,7 +356,12 @@ class Finder {
     }
   }
 
-// etap trzeci
+  compiut() {
+    //  1 dodać wyświetlenie diva
+    document.querySelector('#infoDiv').style.display='flex';
+    
+
+  }
 }
 
 export default Finder;
