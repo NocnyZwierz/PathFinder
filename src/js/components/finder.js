@@ -111,12 +111,11 @@ class Finder {
       break;
     case 3:
       // logikę do obliczania całe trasy. Wyświetlenie najkrótszej trasy na grid. guzik do wyczyszczenia i przejscie do początku działanie aplikacji
-      //wyczyścić grid czyli ustawić wszystko na false
       thisFinder.element.querySelector(select.finder.mainBtn).addEventListener('click', function(e) { // obsługa change step i przejście do nstępnego etapu
         e.preventDefault();
+        thisFinder.resetGrid ();
         thisFinder.changeStep(1);
       });
-      //---------------------> tutaj
       thisFinder.compiut();
       break;
     }
@@ -363,7 +362,7 @@ class Finder {
     // algorytm do wyszukania najkrótszej drogi
     document.querySelector('#infoDiv').style.display='flex';
     
-
+    
     // Zapisujemy współrzędne punktu startowego i końcowego jako tablice [row, col]
     const start = [parseInt(this.start.row), parseInt(this.start.col)];
     const finish = [parseInt(this.finish.row), parseInt(this.finish.col)];
@@ -400,25 +399,23 @@ class Finder {
     const dfs = (from, to) => {
       let visited = new Set(); // Zbiór odwiedzonych węzłów, aby uniknąć cykli
       let longestPath = [];    // Tablica przechowująca najdłuższą ścieżkę
+      const startTime = Date.now(); // Zapisujemy czas rozpoczęcia
+      const timeLimit = 20 * 1000; // 20 sekund czas działania algorytmu
 
       const explore = (currentNode, currentPath) => {
-      // Oznaczamy węzeł jako odwiedzony i dodajemy do bieżącej ścieżki
+        const currentTime = Date.now();
+        // Oznaczamy węzeł jako odwiedzony i dodajemy do bieżącej ścieżki
         visited.add(currentNode.toString());
         currentPath.push(currentNode);
 
+        if (currentTime - startTime >= timeLimit) { //dajemy 20 sekund potem przerywa algorytm
+          return;
+        }
+    
         // Jeśli doszliśmy do końcowego punktu, sprawdzamy długość ścieżki
         if (currentNode.toString() === to.toString()) {
-          if (currentPath.length > longestPath.length) {
-
-            // let gridValueCheck = Object.values(this.grid).map(col => Object.values(col)).flat(); //spłaszcza tablice i sprawdza czy est pierwszy kliknięty
-            // let gridOnlyTrueValues = gridValueCheck.filter((value) => {
-            //   return value;
-            // });
-            
+          if (currentPath.length > longestPath.length) {         
             longestPath = [...currentPath]; // Zapisujemy bieżącą ścieżkę jako najdłuższą
-            // if(longestPath.length === gridOnlyTrueValues.length) {
-            //   return;
-            // }
           }
         } else {
         // Dla każdego sąsiada eksplorujemy dalej
@@ -439,6 +436,48 @@ class Finder {
 
       return longestPath; // Zwracamy najdłuższą znalezioną ścieżkę
     };
+
+    // kod wygerenowany przez gpt 4o działa i czas działania jest do przyjecia wystarczy dodać spinner
+    // dodaje jako ciekawostę, nie rozumiem jak jego usprawnienia działają.
+    // const dfs = (from, to) => {
+    //   let visited = new Set();    // Zbiór odwiedzonych węzłów, aby uniknąć cykli
+    //   let longestPath = [];       // Tablica przechowująca najdłuższą ścieżkę
+    //   let cache = {};             // Cache do zapamiętywania ścieżek dla węzłów
+    
+    //   const explore = (currentNode, currentPath) => {
+    //     if (cache[currentNode]) {
+    //       return cache[currentNode]; // Jeśli węzeł był już odwiedzony, zwracamy z pamięci podręcznej
+    //     }
+    
+    //     visited.add(currentNode.toString());  // Oznaczamy węzeł jako odwiedzony
+    //     currentPath.push(currentNode);        // Dodajemy węzeł do bieżącej ścieżki
+    
+    //     // Jeśli dotarliśmy do celu, zapisujemy aktualną ścieżkę
+    //     if (currentNode.toString() === to.toString()) {
+    //       if (currentPath.length > longestPath.length) {
+    //         longestPath = [...currentPath];  // Zapisujemy jako najdłuższą ścieżkę
+    //       }
+    //     } else {
+    //       for (let neighbor of this.successors(currentNode)) {
+    //         if (!visited.has(neighbor.toString())) {
+    //           explore(neighbor, currentPath); // Eksplorujemy sąsiadów
+    //         }
+    //       }
+    //     }
+    
+    //     // Backtracking: usuwamy z bieżącej ścieżki i oznaczamy jako nieodwiedzone
+    //     visited.delete(currentNode.toString());
+    //     currentPath.pop();
+    
+    //     cache[currentNode] = longestPath;  // Zapisujemy wynik do cache
+    //     return longestPath;
+    //   };
+    
+    //   // Rozpoczynamy eksplorację DFS od punktu startowego
+    //   explore(from, []);
+    
+    //   return longestPath; // Zwracamy najdłuższą znalezioną ścieżkę
+    // };
 
     // Funkcja budująca ścieżkę od punktu końcowego do startowego
     const buildPath = (traversalTree, to) => {
@@ -524,6 +563,20 @@ class Finder {
       const fieldElement = document.querySelector(`[data-row="${node[0]}"][data-col="${node[1]}"]`);
       fieldElement.classList.add('start');
     }
+  }
+
+  resetGrid () {
+    const thisFinder = this;
+
+    for(let row = 1; row <=10; row++){
+      thisFinder.grid[row] = {};
+      for(let col = 1; col <=10; col++) {
+        thisFinder.grid[row][col]= false;
+      }
+    }
+
+    thisFinder.start = null;
+    thisFinder.finish = null;
   }
 }
 
